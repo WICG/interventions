@@ -1,4 +1,4 @@
-# interventions-beta
+# interventions
 
 ## Objective
 
