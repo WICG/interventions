@@ -27,3 +27,7 @@ An intervention:
 This github exists to allow collaborative brainstorming, and to share knowledge about what does and does not work. As such, we encourage everyone to propose interventions that could have big UX impact.
 
 To propose a new intervention, just create a new github issue. Be sure to include exactly how and when the intervention will occur, and why it is an obvious user benefit.
+
+## Discussion of interventions
+
+There are currently no plans to have in person meetings about this and discussion should happen via github issues. If you have questions/concerns that can't be addressed via github issues email intervention-dev@chromium.org.
