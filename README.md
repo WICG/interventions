@@ -20,7 +20,6 @@ An intervention:
 1. Breaks long-standing web behavior in as minimal a way as possible.
 2. Directly benefits the user in a substantial way.
 3. Likely has an opt-out. Will err on the side of giving opt outs, but some rare cases may not need them.
-4. Possibly only happens on some pages/content/loads/tbd if it can't be deployed to all web content in a backwards compatible way. It's unclear if this one will ever happen, but it's on the table of considerations. In these cases, we may even hope to only intervene temporarily.
 
 ## Proposing an intervention
 
@@ -31,3 +30,5 @@ To propose a new intervention, just create a new github issue. Be sure to includ
 ## Discussion of interventions
 
 There are currently no plans to have in person meetings about this and discussion should happen via github issues. If you have questions/concerns that can't be addressed via github issues email intervention-dev@chromium.org.
+
+For more on the history of the origins of this idea, see http://bit.ly/user-agent-intervention.
