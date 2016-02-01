@@ -12,6 +12,16 @@ An **intervention** is when a user agent decides to deviate slightly from a stan
 
 An important part of every intervention is closing the feedback loop and educating developers about the new behavior, so that they can respond appropriately.
 
+## Interventions vs. Other Web Platform Changes
+An intervention is a specific type of change to the web platform.
+
+An intervention:
+
+1. Breaks long-standing web behavior in as minimal a way as possible.
+2. Directly benefits the user in a substantial way.
+3. Likely has an opt-out. Will err on the side of giving opt outs, but some rare cases may not need them.
+4. Possibly only happens on some pages/content/loads/tbd if it can't be deployed to all web content in a backwards compatible way.
+
 ## Proposing an intervention
 
 This github exists to allow collaborative brainstorming, and to share knowledge about what does and does not work. As such, we encourage everyone to propose interventions that could have big UX impact.
