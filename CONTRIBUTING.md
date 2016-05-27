@@ -1,8 +1,8 @@
 # Web Platform Incubator Community Group
 
 This repository is being used for work in the Web Platform Incubator Community Group, governed by the [W3C Community License 
-Agreement (CLA)](http://www.w3.org/community/about/agreements/cla/). To contribute, you must join 
-the CG. 
+Agreement (CLA)](http://www.w3.org/community/about/agreements/cla/). To contribute, you must [join 
+the CG](https://www.w3.org/community/wp-login.php?redirect_to=%2Fcommunity%2Fwicg%2Fjoin). 
 
 If you are not the sole contributor to a contribution (pull request), please identify all 
 contributors in the pull request's body or in subsequent comments.
