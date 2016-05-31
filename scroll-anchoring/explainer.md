@@ -77,16 +77,20 @@ document or an element with scrollable overflow) is as follows:
 Scroll anchoring aims to be the default mode of behavior when launched, so that
 users benefit from it even on legacy content.  To allow web developers to
 disable scroll anchoring in part or all of a webpage we propose a CSS property
-`overflow-anchor` which applies to scrollable elements and has two supported
-values:
+`overflow-anchor` which applies to scrollable elements and supports the
+following values:
 
-* `overflow-anchor: viewport` (default) causes a scrollable area to follow the
-  content within its viewport, using the scroll anchoring algorithm described
-  in this proposal.
+* `overflow-anchor: viewport` causes a scrollable area to follow the content
+  within its viewport, using the scroll anchoring algorithm described in this
+  proposal.
 
 * `overflow-anchor: absolute` causes a scrollable area to maintain its absolute
   scroll position when content changes.  This was the default behavior prior to
   the introduction of scroll anchoring.
+
+* `overflow-anchor: auto` invokes the user agent's default behavior for the
+  scrollable area.  With the launch of scroll anchoring this will be equivalent
+  to `viewport`, but is subject to future modification.
 
 The behavior of the document-level scrollable area is based on the computed
 `overflow-anchor` style of the viewport-defining element (`html` or `body`).
@@ -104,14 +108,19 @@ no, but it may be useful.
 #### History Scroll Restoration
 
 Browsing history entries are stored with (absolute) scroll offsets, which are
-restored during back/forward navigation.  This restoration is done as early as
-possible during page load to avoid a surprising jump.
+restored during back/forward navigation.  Typically the offset is recorded after
+everything on the page has finished loading, but the restoration is done before
+the load completes (since a jump when the load completes would be jarring).
 
 This creates a problem when scroll anchoring makes adjustments during page load,
 since we may end up at a different offset by the time the load completes.
 
 In the current architecture we have no way to perform correct scroll restoration
 and also avoid visible jumps during page load.
+
+One way to solve this is for the browsing history entry to store something
+analogous to a CSS selector for the scroll anchor node, instead of storing an
+absolute scroll offset.
 
 #### Scroll Event Handlers
 
