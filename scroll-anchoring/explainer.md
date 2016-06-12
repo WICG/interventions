@@ -80,11 +80,11 @@ disable scroll anchoring in part or all of a webpage we propose a CSS property
 `overflow-anchor` which applies to scrollable elements and supports the
 following values:
 
-* `overflow-anchor: viewport` causes a scrollable area to follow the content
+* `overflow-anchor: visible` causes a scrollable area to follow the content
   within its viewport, using the scroll anchoring algorithm described in this
   proposal.
 
-* `overflow-anchor: absolute` causes a scrollable area to maintain its absolute
+* `overflow-anchor: none` causes a scrollable area to maintain its absolute
   scroll position when content changes.  This was the default behavior prior to
   the introduction of scroll anchoring.
 
@@ -100,8 +100,7 @@ The `overflow-anchor` property is also proposed (with different values) for
 This feature is distinct from scroll anchoring, but shares the notion of
 adjusting scroll position in response to content changes.
 
-TODO: Should `overflow-anchor` be inherited?  The Sticky Scrollbars spec says
-no, but it may be useful.
+The `overflow-anchor` property is not inherited.
 
 ## Open Issues
 
