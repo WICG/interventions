@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scroll Anchoring</title>
+    <meta charset='utf-8'>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
+            async class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+          specStatus: "CG-DRAFT",
+          shortName: "scrollAnchoring",
+          edDraftURI: "https://cdn.rawgit.com/ymalik/interventions/master/scroll-anchoring/spec.html",
+          testSuiteURI: "TODO",
+          editors: [
+                {   name:       "Steve Kobes",
+                    url:        "",
+                    company:    "Google",
+                    companyURL: "https://www.google.com/" },
+                {   name:       "Yash Malik",
+                    url:        "",
+                    company:    "Google",
+                    companyURL: "https://www.google.com/" },
+          ],
+          otherLinks: [{
+            key: 'Participation',
+            data: [
+                {
+                    value: 'GitHub repository',
+                    href: 'https://github.com/WICG/interventions/scroll-anchoring/'
+                }, {
+                    value: 'Feedback / discussion in the WICG',
+                    href: 'https://github.com/WICG/interventions/issues/2'
+                }
+             ]
+          }],
+      };
+    </script>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+        Changes in DOM elements above the visible region of a scroller can result
+        in the page moving while the user is in the middle of consuming the content.
+      </p>
+      <p>
+        This spec proposes a mechanism to mitigate this jarring user experience by
+        keeping track of the position of an anchor node and adjusting the scroll
+        offset accordingly.
+      </p>
+      <p>
+        This spec also proposes an API for web developers to opt-out of this behavior.
+      </p>
+    </section>
+
+    <section id="intro" class="informative">
+      <h2>Introduction</h2>
+      <p>
+        Today, users of the web are often distracted by content moving around due to
+        changes that occur outside the viewport. Examples include script inserting an
+        iframe containing an ad, or non-sized images loading on a slow network.
+      </p>
+      <p>
+        Historically the browser's default behavior has been to preserve the absolute
+        scroll position when such changes occur. This means that to avoid shifting
+        content, the webpage can attempt to reserve space on the page for anything
+        that will load later. In practice, few websites do this consistently.
+      </p>
+      <p>
+        Scroll anchoring aims to minimize surprising content shifts. It does this by
+        adjusting the scroll position to compensate for the changes outside the
+        viewport.
+      </p>
+    </section>
+    <section dfn-for="ScrollAnchoring">
+      <h2>Description</h2>
+      <p>
+        Scroll anchoring works by selecting a DOM node (the <dfn>anchor node</dfn>) whose
+        movement is used to determine the adjustment to the scroll position.
+      </p>
+      <section>
+        <h3>Anchor Node Selection</h3>
+        <p>
+          The user agent aims to select an anchor node that is deep in the DOM and close to the top
+          edge of the <a id="ref-for-viewport-1">viewport</a>. This maximizes the amount of offscreen content whose
+          changes the user agent will successfully compensate for, while avoiding undesired scrolling
+          when important content loads within the viewport (for example, upon clicking a
+          "Read More" link).
+        </p>
+        <p>
+          The <dfn id="anchoring-algorithm">algorithm to select an anchor node for a scrollable area </dfn>(either a
+          document or an element with scrollable overflow) is as follows:
+          <ol>
+            <li>Walk the DOM within the <a href="https://drafts.csswg.org/cssom-view/#scrolling-box">scrollable area</a>.</li>
+            <li>
+              For each element E encountered by the walk
+              <ol>
+                <li>
+                  If E is an <a href="#unsuitable-anchor" id="ref-for-unsuitable-anchor-1">unsuitable anchor node</a>, skip over E and its descendents.
+                </li>
+                <li>
+                  Otherwise, compare its bounds to the scrollable area's visible region.
+                  <ol>
+                    <li>If E is <a id="ref-for-fully-visible-1">fully visible</a>, terminate the walk and use E as the anchor node.</li>
+                    <li>If E is <a id="ref-for-fully-clipped-1">fully clipped</a>, skip over E and its descendents.</li>
+                    <li>
+                      If E is <a id="ref-for-partially-visible-1">partially visible</a>, mark it as a "candidate"
+                      and descend into its children. If the walk reaches the end of E without finding
+                      another anchor node, use E as the anchor node. (Deeper nodes are preferred
+                      in this case to avoid the failure mode of content being inserted
+                      inside the anchor node but outside the viewport.)
+                    </li>
+                  </ol>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </p>
+        <p>
+          The <dfn id="viewport"> viewport</dfn> is the visible region of the <a href="https://drafts.csswg.org/cssom-view/#scrolling-box">scrollable area</a>.
+        </p>
+        <p>
+          A DOM element E it an <dfn id="unsuitable-anchor">unsuitable anchor node</dfn> if any of the following conditions
+          holds:
+          <ul>
+            <li>
+              E's computed value of the <a href="https://drafts.csswg.org/css-position-3/#propdef-position">position</a> property is <a href="https://drafts.csswg.org/css-position-3/#valdef-position-fixed">fixed</a>.
+            </li>
+            <li>
+              E's computed value of the <a href="https://drafts.csswg.org/css-position-3/#propdef-position">position</a> property is <a href="https://drafts.csswg.org/css-position-3/#valdef-position-absolute">absolute</a> and
+              <ul>
+                <li> E's <a href="https://drafts.csswg.org/css-display-3/#containing-block">containing block</a> is an ancestor of the scrollable area or
+                <li> E has a non-zero computed value for any of the
+                  <a href="https://drafts.csswg.org/css-position-3/#propdef-top">top</a>,
+                  <a href="https://drafts.csswg.org/css-position-3/#propdef-right">right</a>,
+                  <a href="https://drafts.csswg.org/css-position-3/#propdef-bottom">bottom</a>, or
+                  <a href="https://drafts.csswg.org/css-position-3/#propdef-left">left</a>
+                  properties.
+              </ul>
+            </li>
+          </ul>
+        </p>
+        <p>
+          A DOM element E is <dfn id="fully-visible">fully visible </dfn> if it is entirely
+          within the <a id="ref-for-viewport-2">viewport</a>.
+        </p>
+        <p>
+          A DOM element E is <dfn id="fully-clipped">fully clipped </dfn> if it is entirely
+          outside the <a id="ref-for-viewport-3">viewport</a>.
+        </p>
+        <p>
+          A DOM element E is <dfn id="partially-visible">partially visible </dfn> if it is
+          not <a id="ref-for-fully-visible-2">fully visible</a> and not
+          <a id="ref-for-fully-clipped-2"> fully clipped </a>
+        </p>
+        <p>
+      </section>
+      <section>
+        <h3>Scroll Adjustment</h3>
+        <p>
+          When the anchor node moves, the browser computes its previous location L0 and
+          its new location L1 in the coordinate space of the scrolling content. It then
+          reads the current scroll position S0 and computes a new scroll position S1:
+        </p>
+        <p>
+          <pre>S1 = S0 + (L1 - L0)</pre>
+        </p>
+        <p>
+          By setting the scroll position to S1 at the same time that the anchor node moves
+          to L1, the location of the anchor node relative to the viewport is preserved, and
+          no "jump" is visible.
+        </p>
+        <p>
+          The anchor node may be either a text node or an element.
+        </p>
+        <p>
+          Conceptually, a new anchor node is computed whenever the scroll position
+          changes. (As a performance optimization, the implementation may wait until the
+          anchor node is needed before computing it.)
+        </p>
+        <div class="note">
+          In some cases, a scroll anchoring adjustment is suppressed, even though
+          the anchor node has moved. These are:
+          <ul>
+            <li>
+              When 20 consecutive scroll anchoring adjustments have already occurred
+              (with no intervening non-anchoring scrolls).
+            </li>
+            <li>
+              When the scroll anchoring adjustment that would occur is the exact
+              inverse of the most recent scroll anchoring adjustment, and is
+              identical to the one before that. For example, given the following
+              movements of the anchor node:
+              <ol>
+                <li>50 px downward
+                <li>50 px upward
+                <li>50 px downward
+              </ol>
+              The first two will produce scroll anchoring adjustments, but the
+              third will not.
+            </li>
+          </ul>
+        </div>
+      </section>
+    </section>
+    <section>
+      <h2>Opt-out API</h2>
+      <p>
+        Scroll anchoring aims to be the default mode of behavior when launched, so that
+        users benefit from it even on legacy content. Scroll anchoring can be disabled in
+        part or all of a webpage using a CSS property <code>overflow-anchor</code> which
+        applies to scrollable elements and supports the following values:
+      </p>
+      <ul>
+        <li>
+            <code>overflow-anchor: visible</code> causes a scrollable area to follow the content
+            within its viewport, using the <a href="#anchoring-algorithm" id="ref-for-anchoring-algorithm-1">scroll anchoring algorithm</a>.
+        </li>
+        <li>
+            <code>overflow-anchor: none</code> causes a scrollable area to maintain its absolute
+            scroll position when content changes. This was the default behavior prior to
+            the introduction of scroll anchoring.
+        </li>
+        <li>
+            <code>overflow-anchor: auto</code> invokes the user agent's default behavior for the
+            scrollable area. With the launch of scroll anchoring this will be equivalent
+            to <code>visible</code>, but is subject to future modification.
+        </li>
+      </ul>
+      <p>
+        The behavior of the document-level scrollable area is based on the computed
+        <code>overflow-anchor</code> style of the viewport-defining element (<code>html</code> or <code>body</code>).
+      </p>
+      <p>
+        The <code>overflow-anchor</code> property is also proposed (with different values) for
+        [CSS Sticky Scrollbars](http://tabatkins.github.io/specs/css-sticky-scrollbars/).
+        This feature is distinct from scroll anchoring, but shares the notion of
+        adjusting scroll position in response to content changes.
+      </p>
+      <p>
+        The <code>overflow-anchor</code> property is not inherited.
+      </p>
+    </section>
+
+    <h2 id="references">References</h2>
+    <h3 id="normative">Normative References</h3>
+    <dl>
+      <dt id="biblio-cssom-view-1">[CSSOM-VIEW-1]
+      <dd>Simon Pieters. <a href="https://drafts.csswg.org/cssom-view/">CSSOM View Module</a>. 17 March 2016. WD. URL: <a href="https://drafts.csswg.org/cssom-view/">https://drafts.csswg.org/cssom-view/</a>
+    </dl>
+  </body>
+</html>

@@ -18,6 +18,10 @@ that will load later.  In practice, few websites do this consistently.
 Scroll anchoring aims to minimize surprising content shifts by scrolling to
 follow the movement of visible page elements.
 
+## Draft Spec
+
+[Draft spec](https://cdn.rawgit.com/ymalik/interventions/master/scroll-anchoring/spec.html)
+
 ## Design
 
 Scroll anchoring works by selecting a DOM node (the *anchor node*) whose
