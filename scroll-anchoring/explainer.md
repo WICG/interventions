@@ -170,6 +170,14 @@ The current implementation treats all of these as layout-affecting for SANACLAP
 purposes, but the web compatibility issues that motivated SANACLAP require
 suppression for only a small subset of these properties.
 
+In particular, the properties that relate directly to positioning and the CSS
+box model are more important than the properties that relate to text rendering
+or obscure layout features.
+
+On the other hand, a principled approach of "anything that can affect a
+descendant's computed position" has more conceptual simplicity, if this can be
+feasibly incorporated into a spec.
+
 #### Separating Opt Out and Exclusion APIs
 
 The `overflow-anchor` property is in a way doing double-duty as an opt out for
