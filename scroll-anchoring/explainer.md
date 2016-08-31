@@ -85,9 +85,9 @@ one of its ancestors.  For example, a map panning interface might update a CSS
 transform in response to mouse movements, or a sticky-header implementation
 might adjust padding on the body element.
 
-The SANACLAP principle ("suppress if anchor node ancestor changed a
-layout-affecting property") aims to suppress these undesired scroll anchoring
-adjustments.
+The SANACLAP principle ("**s**uppress if **a**nchor **n**ode **a**ncestor
+**c**hanged a **l**ayout-**a**ffecting **p**roperty") aims to suppress these
+undesired scroll anchoring adjustments.
 
 Under the SANACLAP principle, if the anchor node, or any ancestor of the anchor
 node up to and including the scrollable element (or document), has any of a
