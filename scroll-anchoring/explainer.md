@@ -208,10 +208,21 @@ anchor to such an element.)
 There is an open question of whether to skip absolute-positioned elements
 unconditionally.
 
-The argument in favor is that an absolute-positioned element is not affected by
-its in-flow siblings.  If static-positioned element A is followed by
-absolute-positioned element B, changes in the size of A do not move B, so
-anchoring to B isn't useful.
+Arguments in favor:
+
+* In the simplest case, an absolute-positioned element is not affected by
+  its in-flow siblings.  That is, if static-positioned element A is followed by
+  absolute-positioned element B, changes in the size of A do not move B, so
+  anchoring to B isn't useful.
+
+* A website that implements a fixed header as an absolute-positioned element
+  updated on scroll events will see no benefit from scroll anchoring if we
+  anchor to that element (adjustments from the header's movement are suppressed
+  under SANACLAP).  If the anchor node selection algorithm skips the element,
+  it will anchor to something in the main content permitting useful adjustments.
+
+  (The algorithm already skips fixed-position elements, which are a more natural
+  way of implementing fixed headers.)
 
 Counter-arguments:
 
