@@ -90,7 +90,15 @@
           The <dfn id="anchoring-algorithm">algorithm to select an anchor node for a scrollable area </dfn>(either a
           document or an element with scrollable overflow) is as follows:
           <ol>
-            <li>Walk the DOM within the <a href="https://drafts.csswg.org/cssom-view/#scrolling-box">scrollable area</a>.</li>
+            <li>
+              If the scrollable area is created by an element whose computed value of the
+              <a href="#overflow-anchor">overflow-anchor</a> property is
+              <a href="#overflow-anchor-none">none</a>, then do not select an anchor node.
+            </li>
+            <li>
+              Otherwise, walk the DOM within the
+              <a href="https://drafts.csswg.org/cssom-view/#scrolling-box">scrollable area</a>.
+            </li>
             <li>
               For each element E encountered by the walk
               <ol>
@@ -126,16 +134,13 @@
               E's computed value of the <a href="https://drafts.csswg.org/css-position-3/#propdef-position">position</a> property is <a href="https://drafts.csswg.org/css-position-3/#valdef-position-fixed">fixed</a>.
             </li>
             <li>
-              E's computed value of the <a href="https://drafts.csswg.org/css-position-3/#propdef-position">position</a> property is <a href="https://drafts.csswg.org/css-position-3/#valdef-position-absolute">absolute</a> and
-              <ul>
-                <li> E's <a href="https://drafts.csswg.org/css-display-3/#containing-block">containing block</a> is an ancestor of the scrollable area or
-                <li> E has a non-zero computed value for any of the
-                  <a href="https://drafts.csswg.org/css-position-3/#propdef-top">top</a>,
-                  <a href="https://drafts.csswg.org/css-position-3/#propdef-right">right</a>,
-                  <a href="https://drafts.csswg.org/css-position-3/#propdef-bottom">bottom</a>, or
-                  <a href="https://drafts.csswg.org/css-position-3/#propdef-left">left</a>
-                  properties.
-              </ul>
+              E's computed value of the <a href="https://drafts.csswg.org/css-position-3/#propdef-position">position</a> property is <a href="https://drafts.csswg.org/css-position-3/#valdef-position-absolute">absolute</a> and E's
+              <a href="https://drafts.csswg.org/css-display-3/#containing-block">containing block</a>
+              is an ancestor of the scrollable area.
+            </li>
+            <li>
+              E's computed value of the <a href="#overflow-anchor">overflow-anchor</a>
+              property is <a href="#overflow-anchor-none">none</a>.
             </li>
           </ul>
         </p>
@@ -157,7 +162,8 @@
       <section>
         <h3>Scroll Adjustment</h3>
         <p>
-          When the anchor node moves, the browser computes its previous location L0 and
+          If an anchor node was selected, then when the anchor node moves,
+          the browser computes its previous location L0 and
           its new location L1 in the coordinate space of the scrolling content. It then
           reads the current scroll position S0 and computes a new scroll position S1:
         </p>
@@ -182,60 +188,58 @@
           the anchor node has moved. These are:
           <ul>
             <li>
-              When 20 consecutive scroll anchoring adjustments have already occurred
-              (with no intervening non-anchoring scrolls).
-            </li>
-            <li>
-              When the scroll anchoring adjustment that would occur is the exact
-              inverse of the most recent scroll anchoring adjustment, and is
-              identical to the one before that. For example, given the following
-              movements of the anchor node:
-              <ol>
-                <li>50 px downward
-                <li>50 px upward
-                <li>50 px downward
-              </ol>
-              The first two will produce scroll anchoring adjustments, but the
-              third will not.
+              When the DOM changes that caused the adjustment include any change to the
+              computed value of a property affecting the position of elements, on any
+              element in the path from the anchor node to the scrollable element (or
+              document), inclusive of both.
+              <p class="issue">
+                Need a clearer specification of which properties trigger this condition.
+              </p>
             </li>
           </ul>
         </div>
       </section>
     </section>
     <section>
-      <h2>Opt-out API</h2>
+      <h2>Exclusion API</h2>
       <p>
         Scroll anchoring aims to be the default mode of behavior when launched, so that
-        users benefit from it even on legacy content. Scroll anchoring can be disabled in
-        part or all of a webpage using a CSS property <code>overflow-anchor</code> which
-        applies to scrollable elements and supports the following values:
+        users benefit from it even on legacy content. A CSS property
+        <dfn id="overflow-anchor"><code>overflow-anchor</code></dfn> can disable
+        scroll anchoring in part or all of a webpage (opt out), or exclude portions
+        of the DOM from the anchor node selection algorithm.
+        This property supports the following values when applied to an element E:
       </p>
       <ul>
         <li>
-            <code>overflow-anchor: visible</code> causes a scrollable area to follow the content
-            within its viewport, using the <a href="#anchoring-algorithm" id="ref-for-anchoring-algorithm-1">scroll anchoring algorithm</a>.
+            <dfn><code>overflow-anchor: visible</code></dfn> declares that the DOM subtree
+            rooted at E is eligible to participate in the <a href="#anchoring-algorithm"
+            id="ref-for-anchoring-algorithm-1">anchor node selection algorithm</a>
+            for any scrollable area created by E or an ancestor of E.
         </li>
         <li>
-            <code>overflow-anchor: none</code> causes a scrollable area to maintain its absolute
-            scroll position when content changes. This was the default behavior prior to
-            the introduction of scroll anchoring.
+            <dfn id="overflow-anchor-none"><code>overflow-anchor: none</code></dfn>
+            declares that the DOM subtree rooted at E is <em>not</em> eligible to
+            participate in the <a href="#anchoring-algorithm"
+            id="ref-for-anchoring-algorithm-1">anchor node selection algorithm</a>
+            for any scrollable area created by E or an ancestor of E.
         </li>
         <li>
-            <code>overflow-anchor: auto</code> invokes the user agent's default behavior for the
-            scrollable area. With the launch of scroll anchoring this will be equivalent
+            <dfn><code>overflow-anchor: auto</code></dfn> invokes the user agent's default behavior for the
+            element. With the launch of scroll anchoring this will be equivalent
             to <code>visible</code>, but is subject to future modification.
         </li>
       </ul>
-      <p>
-        The behavior of the document-level scrollable area is based on the computed
-        <code>overflow-anchor</code> style of the viewport-defining element (<code>html</code> or <code>body</code>).
+      <p class="issue">
+        The pairing of <code>visible</code> with <code>none</code> is awkward.
+        We should come up with better names for these values.
       </p>
-      <p>
+      <div class="note">
         The <code>overflow-anchor</code> property is also proposed (with different values) for
-        [CSS Sticky Scrollbars](http://tabatkins.github.io/specs/css-sticky-scrollbars/).
+        <a href="http://tabatkins.github.io/specs/css-sticky-scrollbars/">CSS Sticky Scrollbars</a>.
         This feature is distinct from scroll anchoring, but shares the notion of
         adjusting scroll position in response to content changes.
-      </p>
+      </div>
       <p>
         The <code>overflow-anchor</code> property is not inherited.
       </p>
