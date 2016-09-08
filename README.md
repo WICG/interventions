@@ -27,8 +27,19 @@ This github exists to allow collaborative brainstorming, and to share knowledge 
 
 To propose a new intervention, just create a new github issue. Be sure to include exactly how and when the intervention will occur, and why it is an obvious user benefit.
 
+## Intervention design guidelines
+
+Interventions that are well-designed to balance the concerns of the user with the concerns of the web developer tend to have the following properties:
+
+1. *Predictable*: A developer can anticipate when their code will be impacted by an intervention, and what the resulting behavior will be.
+2. *Avoidable*: Developers following documented best practices shouldn't be impacted by the intervention.
+3. *Transparent*: A developer should be able to tell that an intervention has been hit.  For example, a console message should be generated in the developer tools with a link to details about the intervention and how to avoid it, and some sort of detection or reporting should be available in the wild.
+4. *Justified by data*: As part of designing and shipping an intervention, the browser should collect statistics from the wild that attempt to quantify both the benefit of the intervention and the potential cost in order to help find a good tradeoff.  Once the intervention has shipped, the browser should continue to collect statistics on how often it is triggering and what benefits it's providing.
+
+In order to design an intervention that meets these properties it's sometimes necessary to first standardize and ship new API surface area.  For example in order to [ignore touch listeners to improve scrolling](https://github.com/WICG/interventions/issues/18) we had to first define an API for [passive event listeners](https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md).
+
 ## Discussion of interventions
 
 There are currently no plans to have in person meetings about this and discussion should happen via github issues. If you have questions/concerns that can't be addressed via github issues email intervention-dev@chromium.org.
 
-For more on the history of the origins of this idea, see http://bit.ly/user-agent-intervention.
+For more on the history of the origins of this idea, see http://bit.ly/user-agent-intervention.  See also this recent [presentation at BlinkOn](https://docs.google.com/presentation/d/1yD5nmmzQGAbV6Zn3aiuEOAFccgbWjXomLCDFM4dYMF4/edit) ([video](https://www.youtube.com/watch?v=wQGa_6CRc9I))
