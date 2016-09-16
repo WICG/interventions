@@ -105,6 +105,26 @@ of scroll anchoring is subject to change, but should at minimum include:
 * width, height, min-width, min-height, max-width, max-height
 * position, display, float, clear, overflow, transform
 
+## Flow Change Suppression
+
+If the DOM changes made by a scroll event handler alter the position of the
+anchor node, we may encounter feedback loops in which scroll anchoring and
+the scroll event handler trigger each other ad infinitum.
+
+A common way in which this occurs is when a header is fixed-position below a
+scroll offset, and the anchor node (in subsequent content) moves due to the
+header leaving the [normal flow](https://drafts.csswg.org/css-position-3/#nf).
+
+(The SANACLAP principle doesn't help here, because the header is not an ancestor
+of the anchor node.)
+
+To address this case, we suppress any scroll anchoring adjustment arising from a
+change in the computed `position` style of any element in the scroller (not just
+those in the ancestor path) that pulls the element in or out of normal flow.
+
+The values `absolute` and `fixed` are considered out-of-flow for this purpose;
+all others are considered in-flow.
+
 ## Exclusion / Opt Out API
 
 Scroll anchoring aims to be the default mode of behavior when launched, so that
@@ -193,7 +213,7 @@ additional heuristics may still be needed for web compatibility.
 
 There may be value in letting web developers opt in to a simpler and more
 aggressive version of scroll anchoring that does not include compatibility
-heuristics.
+heuristics such as SANACLAP and the flow change suppression.
 
 This could be done through another value for the `overflow-anchor` property.
 
@@ -259,22 +279,6 @@ and also avoid visible jumps during page load.
 One way to solve this is for the browsing history entry to store something
 analogous to a CSS selector for the scroll anchor node, instead of storing an
 absolute scroll offset.
-
-#### Scroll Event Handlers
-
-Many pages on the web make changes to the DOM in response to changes in the
-scroll position.  For example, they change the layout of the page below a
-certain scroll threshold, or they adjust the position of an element so that it
-"sticks to" the viewport.
-
-If the DOM changes made by a scroll event handler alter the position of the
-anchor node, we easily encounter feedback loops in which scroll anchoring and
-the scroll event handler trigger each other ad infinitum.  This is an
-undesirable user experience.
-
-The SANACLAP principle eliminates many, but not all, of the web compatibility
-issues that arise from scroll event handler feedback loops.  Solving the
-remaining cases is an in-progress discussion.
 
 ## Implementation Status
 
