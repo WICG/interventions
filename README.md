@@ -2,15 +2,13 @@
 
 ## Objective
 
-The purpose of this github is to create a place to collaborate between browser vendors on various intervention experiments.
+The purpose of this github is to create a place to collaborate between browser vendors (and web developers) on various intervention experiments.
 
 ## What are interventions?
 
 Over the course of its existence, the web has accumulated a multitude of standards and common patterns. While most of these are beneficial for both developers and users, if abused (intentionally or otherwise) web APIs can sometimes be a detriment to user experience.
 
 An **intervention** is when a user agent decides to deviate slightly from a standardized behavior in order to provide a greatly enhanced user experience. Because of its nature, it must be done sparingly and with extreme prudence.
-
-An important part of every intervention is closing the feedback loop and educating developers about the new behavior, so that they can respond appropriately.
 
 ## Interventions vs. Other Web Platform Changes
 An intervention is a specific type of change to the web platform.
