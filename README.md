@@ -38,6 +38,6 @@ In order to design an intervention that meets these properties it's sometimes ne
 
 ## Discussion of interventions
 
-There are currently no plans to have in person meetings about this and discussion should happen via github issues. If you have questions/concerns that can't be addressed via github issues email intervention-dev@chromium.org.
+There are currently no plans to have in-person meetings about this and discussion should happen primarily via github [issues](https://github.com/WICG/interventions/issues).  Also, every intervention which ships in Chrome will have a public [discussion thread on blink-dev](https://groups.google.com/a/chromium.org/forum/#!searchin/blink-dev/intervene%7Csort:date) where comments from the public are welcomed.  If you have other questions/concerns email intervention-dev@chromium.org.
 
 For more on the history of the origins of this idea, see http://bit.ly/user-agent-intervention.  See also this recent [presentation at BlinkOn](https://docs.google.com/presentation/d/1yD5nmmzQGAbV6Zn3aiuEOAFccgbWjXomLCDFM4dYMF4/edit) ([video](https://www.youtube.com/watch?v=wQGa_6CRc9I))
