@@ -1,46 +1,9 @@
 # Interventions
 
-## Objective
+This repository is an archive whose issue tracker contains historical discussions about a certain type of specification change proposal, known as an "intervention".
 
-The purpose of this github is to create a place to collaborate between browser vendors (and web developers) on various intervention experiments.
+Interventions were a category of spec proposal that intentionally changed long-standing web behavior, with the goal of providing user benefit. You can find many examples of such changes in the [issue tracker](https://github.com/WICG/interventions/issues?q=is%3Aissue), or learn more about the historical project in [older revisons of this README](https://github.com/WICG/interventions/blob/5c5e02cebfa469a31777ccfba39c846bd96f5fa6/README.md).
 
-## What are interventions?
+Since the idea was originally proposed, the community has moved away from categorizing spec changes as "interventions" or "non-interventions". Many spec changes have some ingredient of changing existing behavior, or of providing user benefit. We found that the concept of interventions as a separate category sometimes confused people, leading them to think that intervention spec-changes did not follow the normal process for standardizing and shipping new proposals. (This was never the intent.)
 
-Over the course of its existence, the web has accumulated a multitude of standards and common patterns. While most of these are beneficial for both developers and users, if abused (intentionally or otherwise) web APIs can sometimes be a detriment to user experience.
-
-An **intervention** is when a user agent decides to deviate slightly from a standardized behavior in order to provide a greatly enhanced user experience. Because of its nature, it must be done sparingly and with extreme prudence.
-
-## Interventions vs. Other Web Platform Changes
-An intervention is a specific type of change to the web platform.
-
-An intervention:
-
-1. Breaks long-standing web behavior in as minimal a way as possible.
-2. Directly benefits the user in a substantial way.
-3. Likely has an opt-out. Will err on the side of giving opt outs, but some rare cases may not need them.
-
-## Proposing an intervention
-
-This github exists to allow collaborative brainstorming, and to share knowledge about what does and does not work. As such, we encourage everyone to propose interventions that could have big UX impact.
-
-To propose a new intervention, just create a new github issue. Be sure to include exactly how and when the intervention will occur, and why it is an obvious user benefit.
-
-## Intervention design guidelines
-
-Interventions that are well-designed to balance the concerns of the user with the concerns of the web developer tend to have the following properties:
-
-1. *Predictable*: A developer can anticipate when their code will be impacted by an intervention, and what the resulting behavior will be.
-2. *Avoidable*: Developers following documented best practices shouldn't be impacted by the intervention.
-3. *Transparent*: A developer should be able to tell that an intervention has been hit.  For example, a console message should be generated in the developer tools with a link to details about the intervention and how to avoid it, and some sort of detection or reporting should be available in the wild.
-4. *Justified by data*: As part of designing and shipping an intervention, the browser should collect statistics from the wild that attempt to quantify both the benefit of the intervention and the potential cost in order to help find a good tradeoff.  Once the intervention has shipped, the browser should continue to collect statistics on how often it is triggering and what benefits it's providing.
-
-In order to design an intervention that meets these properties it's sometimes necessary to first standardize and ship new API surface area.  For example in order to [ignore touch listeners to improve scrolling](https://github.com/WICG/interventions/issues/18) we had to first define an API for [passive event listeners](https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md).
-
-## Discussion of interventions
-
-There are currently no plans to have in-person meetings about this and discussion should happen primarily via github [issues](https://github.com/WICG/interventions/issues).  Every intervention which ships in Chrome will have a [discussion thread on blink-dev](https://groups.google.com/a/chromium.org/forum/#!searchin/blink-dev/intervene%7Csort:date) where comments from the public are welcomed.  If you develop a website which you believe is negatively impacted by an intervention in Chrome then please [file a chromium bug](https://crbug.com).  Other questions/concerns can be discussed on [intervention-dev@chromium.org](https://groups.google.com/a/chromium.org/forum/#!forum/intervention-dev).
-
-For history and more details on the thinking here within the Chrome team, see:
-- [BlinkOn 7 ecosystem alignment update](https://docs.google.com/presentation/d/1W6C3EQFZCahCEBb6lyzrY2WUDuqhqnhhPnZDtOwYw-w)
-- [BlinkOn 6 Interventions](https://docs.google.com/presentation/d/1yD5nmmzQGAbV6Zn3aiuEOAFccgbWjXomLCDFM4dYMF4/edit) ([video](https://www.youtube.com/watch?v=wQGa_6CRc9I))
-- Original [user-agent intervention proposal](http://bit.ly/user-agent-intervention)
+Similarly, we are no longer coordinating around such changes in this repository. Instead, we tend to submit specification change proposals to the relevant specification's repository, for discussion directly with that community.
